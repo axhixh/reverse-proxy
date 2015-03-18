@@ -49,14 +49,6 @@ public class Proxy {
         }
     }
 
-    public static void main(String[] args) throws URISyntaxException {
-        HttpHandler notFoundHandler = null;
-        Proxy proxy = new Proxy(notFoundHandler);
-        proxy.addRoute("/api-1", "http://localhost:8090/api-1", "http://localhost:8091/api-1");
-        proxy.addRoute("/api-2", "http://localhost:8095/api-2", "http://localhost:8096/api-2");
-        proxy.start(8080, "0.0.0.0");
-    }
-
     private static HandlerWrapper setupLoadBalancer(String... backends) throws URISyntaxException {
         final LoadBalancingProxyClient client = new LoadBalancingProxyClient();
         client.setConnectionsPerThread(5);
