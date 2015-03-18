@@ -10,6 +10,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.io.ByteArrayOutputStream;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
@@ -38,7 +39,7 @@ public class ProxyTest {
             backend.start();
         }
 
-        HttpHandler notFoundHandler = null;
+        HttpHandler notFoundHandler = new NotFoundHandler();
         proxy = new Proxy(notFoundHandler);
         proxy.addRoute("/api-1", "http://localhost:8090", "http://localhost:8091");
         proxy.addRoute("/api-2", "http://localhost:8095", "http://localhost:8096");
@@ -89,6 +90,11 @@ public class ProxyTest {
         System.out.println(body);
         Assert.assertTrue(body.endsWith("/api-1/hello/test"));
 
+    }
+
+    @Test(expected = FileNotFoundException.class)
+    public void testThatProxyReturnsNotFoundForMissingUrl() throws Exception {
+        get("http://localhost:8080/api-3");
     }
 
     private String get(String url) throws IOException {
